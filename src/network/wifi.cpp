@@ -21,7 +21,7 @@ void APStart() {
     WiFi.softAPConfig(StrToIP("192.168.39.39"),
                       StrToIP("192.168.39.1"),
                       StrToIP("255.255.255.0"));
-    WiFi.softAP("凌Pro-1");
+    WiFi.softAP("earMain");
 }
 
 // 网页界面

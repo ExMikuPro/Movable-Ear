@@ -1,17 +1,22 @@
 
 #include <arduino.h>
 #include "network/wifi.h"
+#include "U8g2lib.h"
 
 #include "Ticker.h"
 
-#define CLK_PIN D1
-#define DATA_PIN D2
+#define CLK_PIN D5
+#define DATA_PIN D6
 
 
 int EncodeInt = 8;
+double angle = 90.0;
+
+U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0, /* reset=*/
+                                            U8X8_PIN_NONE);  //M0/ESP32/ESP8266/mega2560/Uno/Leonardo
+
 
 wifi WiFis;
-Ticker ticker;
 
 
 void setup() {
@@ -24,7 +29,10 @@ void setup() {
     Serial.begin(9600);
     WiFis.begin();
     // ticker.attach_ms(100, readEncode);
-
+    u8g2.begin();
+    u8g2.setFont(u8g2_font_t0_11_t_all);
+    u8g2.drawStr(0, 32, String(angle).c_str());
+    u8g2.sendBuffer();
 }
 
 void loop() {
@@ -48,7 +56,15 @@ void loop() {
             }
         }
         analogWrite(D0, counter);
-        Serial.println(counter);
+        if (counter == 18) {
+            angle = 0;
+        } else {
+            angle = 90.0 - 9 * (counter - 8);
+        }
+        u8g2.clearBuffer();
+        u8g2.drawStr(0, 32, String(angle).c_str());
+        u8g2.drawStr(0, 22, String(counter).c_str());
+        u8g2.sendBuffer();
     }
 
 }
